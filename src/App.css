@@ -1,0 +1,184 @@
+:root {
+  --bg: #f7fafc;
+  --card-bg: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --line: rgba(0,0,0,.08);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 14px rgba(17,24,39,.06);
+  --shadow-lg: 0 10px 28px rgba(17,24,39,.10);
+
+  --ok: #107c41;
+  --mid: #c77d00;
+  --bad: #b00020;
+
+  --note-bg: #fff7e6;
+  --note-line: #ffe1ac;
+
+  --formula-bg: #eef6ff;
+  --formula-line: #d3e6ff;
+
+  --factor-bg: #e9f8ef;
+  --factor-line: #bde5c1;
+  --factor-text: #285c36;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  border-right: 1px solid var(--line);
+  background: #fff;
+  padding: 18px 16px;
+}
+
+.sidebar-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+.logo {
+  width: 180px;
+  height: auto;
+  display: block;
+}
+
+.sidebar-section h3 {
+  margin: 10px 0 12px;
+  font-size: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.field span {
+  font-size: 13px;
+  color: #374151;
+}
+
+.field input {
+  height: 40px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  outline: none;
+  box-shadow: var(--shadow-sm);
+  font-size: 14px;
+}
+
+.field input:focus {
+  border-color: rgba(37,99,235,.35);
+  box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+}
+
+/* === Fondo verde claro en Factor Operativo A y B (equivalente al CSS de Streamlit) === */
+.field.highlight input.factor {
+  background-color: var(--factor-bg);
+  box-shadow: inset 0 0 0 1px var(--factor-line), var(--shadow-sm);
+  color: var(--factor-text);
+}
+
+.main {
+  padding: 22px 22px 40px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.lead {
+  margin: 0 0 18px;
+  color: #374151;
+  line-height: 1.45;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin: 10px 0 20px;
+}
+
+.kpi-card {
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: #f7f7f8;
+  border: 1px solid #e9eaee;
+  box-shadow: var(--shadow-sm);
+}
+
+.kpi-title {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.kpi-value {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.small-muted {
+  font-size: 12px;
+  color: #777;
+  margin-top: 6px;
+}
+
+.ok { color: var(--ok); }
+.mid { color: var(--mid); }
+.bad { color: var(--bad); }
+
+.section-title {
+  margin: 16px 0 10px;
+  font-size: 18px;
+}
+
+.formula {
+  background: var(--formula-bg);
+  border: 1px solid var(--formula-line);
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 1px solid var(--note-line);
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-top: 8px;
+}
+
+.caption {
+  margin-top: 18px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+@media (max-width: 1100px) {
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar { border-right: none; border-bottom: 1px solid var(--line); }
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
