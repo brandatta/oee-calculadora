@@ -1,10 +1,10 @@
+cat > src/App.jsx <<'EOF'
 import React, { useMemo, useState } from "react";
 
 function clampNumber(x) {
   const n = Number(x);
   return Number.isFinite(n) ? n : 0;
 }
-
 function clamp01(x) {
   const n = clampNumber(x);
   return Math.max(0, Math.min(n, 1));
@@ -49,7 +49,17 @@ function calcOEE({
     return { A, P, Q, OEE, tiempoOperacion, A_raw, P_raw, Q_raw, OEE_raw };
   }
 
-  return { A: A_raw, P: P_raw, Q: Q_raw, OEE: OEE_raw, tiempoOperacion, A_raw, P_raw, Q_raw, OEE_raw };
+  return {
+    A: A_raw,
+    P: P_raw,
+    Q: Q_raw,
+    OEE: OEE_raw,
+    tiempoOperacion,
+    A_raw,
+    P_raw,
+    Q_raw,
+    OEE_raw,
+  };
 }
 
 function pct(x) {
@@ -64,7 +74,6 @@ function kpiColor(val) {
   return "bad";
 }
 
-// Stepper con -/+ (parecido a Streamlit)
 function Stepper({ label, value, onChange, step = 1, min = 0, isInt = false, highlight = false }) {
   const setVal = (v) => {
     let n = clampNumber(v);
@@ -159,7 +168,8 @@ export default function App() {
     return (
       "Algunas métricas superan 100% con los datos ingresados. Se aplicó Cap a 100% para lectura operativa.\n" +
       "Valores sin Cap:\n- " +
-      over.join("\n- ");
+      over.join("\n- ")
+    );
   }, [capAt100, A_raw, P_raw, Q_raw, OEE_raw]);
 
   const year = new Date().getFullYear();
@@ -252,8 +262,9 @@ export default function App() {
           <b>OEE = A × P × Q</b>
         </div>
 
-        <div className="s-footer">© {year} — Brandatta • Calculadora OEE</div>
+        <div className="s-footer">© {year} — Brandatta • Calculadora OEE • build 2026-01-12</div>
       </main>
     </div>
   );
 }
+EOF
