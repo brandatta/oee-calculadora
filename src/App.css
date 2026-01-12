@@ -1,3 +1,4 @@
+cat > src/App.css <<'EOF'
 :root {
   --bg: #ffffff;
   --sidebar: #f6f7f9;
@@ -55,7 +56,6 @@ body {
   margin: 6px 0 14px;
 }
 
-/* Stepper */
 .s-field { margin-bottom: 14px; }
 .s-label {
   font-size: 12px;
@@ -93,14 +93,12 @@ body {
 }
 .s-btn:hover { background: #fafafa; }
 
-/* FO highlight */
 .s-highlight .s-input {
   background: var(--fo-bg);
   border-color: var(--fo-line);
   color: var(--fo-text);
 }
 
-/* Toggle */
 .s-toggle {
   display: flex;
   gap: 10px;
@@ -111,15 +109,13 @@ body {
 }
 .s-toggle input { transform: scale(1.05); }
 
-/* Observaciones */
-.s-obs {
-  margin-top: 12px;
-}
+.s-obs { margin-top: 12px; }
 .s-obs-title {
   font-weight: 700;
   font-size: 14px;
   margin-bottom: 8px;
 }
+
 .s-warning {
   display: grid;
   grid-template-columns: 18px 1fr;
@@ -144,10 +140,7 @@ body {
 }
 .s-warning-text { font-size: 12px; line-height: 1.35; }
 
-/* Main */
-.s-main {
-  padding: 26px 26px 40px;
-}
+.s-main { padding: 26px 26px 40px; }
 
 .s-title {
   font-size: 36px;
@@ -162,7 +155,6 @@ body {
   max-width: 980px;
 }
 
-/* KPI cards (idéntico CSS Streamlit) */
 .s-kpi-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -170,23 +162,17 @@ body {
   max-width: 980px;
 }
 
-.kpi-card {
-  border-radius: 16px;
-  padding: 14px 16px;
-  background: #f7f7f8;
-  border: 1px solid #e9eaee;
-  box-shadow: var(--shadow-sm);
-}
+/* EXACTO Streamlit */
+.kpi-card {border-radius: 16px; padding: 14px 16px; background: #f7f7f8; border: 1px solid #e9eaee; box-shadow: var(--shadow-sm);}
+.kpi-title {font-size: 13px; color: #555; margin-bottom: 4px}
+.kpi-value {font-size: 26px; font-weight: 700}
+.small-muted {font-size:12px; color:#777; margin-top:6px}
+.ok {color:#107c41}
+.mid {color:#c77d00}
+.bad {color:#b00020}
+.note {background:#fff7e6; border:1px solid #ffe1ac; padding:12px 14px; border-radius:12px; max-width:980px; margin-top:8px}
+.formula {background:#eef6ff; border:1px solid #d3e6ff; padding:12px 14px; border-radius:12px; max-width:980px; margin-bottom:10px}
 
-.kpi-title { font-size: 13px; color: #555; margin-bottom: 4px; }
-.kpi-value { font-size: 26px; font-weight: 700; }
-.small-muted { font-size: 12px; color: #777; margin-top: 6px; }
-
-.ok { color: var(--ok); }
-.mid { color: var(--mid); }
-.bad { color: var(--bad); }
-
-/* Info (audit) */
 .s-info {
   max-width: 980px;
   margin: 12px 0 8px;
@@ -199,31 +185,10 @@ body {
   line-height: 1.35;
 }
 
-/* Conceptos */
 .s-h2 {
   margin: 18px 0 10px;
   font-size: 22px;
   font-weight: 800;
-}
-
-.formula {
-  max-width: 980px;
-  background: var(--formula-bg);
-  border: 1px solid var(--formula-line);
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin-bottom: 10px;
-  font-size: 13px;
-}
-
-.note {
-  max-width: 980px;
-  background: var(--note-bg);
-  border: 1px solid var(--note-line);
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin-top: 8px;
-  font-size: 13px;
 }
 
 .s-footer {
@@ -242,3 +207,4 @@ body {
   .s-kpi-grid { max-width: 100%; }
   .s-subtitle, .formula, .note, .s-info, .s-footer { max-width: 100%; }
 }
+EOF
