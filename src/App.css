@@ -1,4 +1,4 @@
-cat > src/App.css <<'EOF'
+/* src/App.css */
 :root {
   --bg: #ffffff;
   --sidebar: #f6f7f9;
@@ -207,4 +207,3 @@ body {
   .s-kpi-grid { max-width: 100%; }
   .s-subtitle, .formula, .note, .s-info, .s-footer { max-width: 100%; }
 }
-EOF
