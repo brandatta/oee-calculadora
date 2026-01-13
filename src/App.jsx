@@ -200,7 +200,7 @@ export default function App() {
       `Nombre: ${nombre}\nEmpresa: ${empresa}\nRol: ${rol}\n\nConsulta:\n${consulta}\n`
     );
 
-    window.location.href = `mailto:contacto@brandatta.com.ar?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:sebastian@brandatta.com.ar?subject=${subject}&body=${body}`;
 
     // UX: dejamos un feedback y limpiamos (opcional)
     setCMsg("Abriendo tu cliente de correo para enviar la consulta...");
