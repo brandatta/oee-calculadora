@@ -121,21 +121,25 @@ function InfoBox({ text }) {
 }
 
 export default function App() {
+  // Defaults solicitados
   const [tiempoPlan, setTiempoPlan] = useState(480);
-  const [tiempoParo, setTiempoParo] = useState(60);
-
-  // Antes: cicloIdeal seg/un
-  // Ahora: unidades ideales dentro del tiempo planificado (unid)
+  const [tiempoParo, setTiempoParo] = useState(10);
   const [unidadesIdealEnTP, setUnidadesIdealEnTP] = useState(600);
-
-  const [piezasTotales, setPiezasTotales] = useState(18000);
-  const [piezasBuenas, setPiezasBuenas] = useState(17500);
+  const [piezasTotales, setPiezasTotales] = useState(532);
+  const [piezasBuenas, setPiezasBuenas] = useState(520);
 
   // FO1/FO2 ajustan la capacidad ideal (denominador)
   const [fo1, setFo1] = useState(1.0);
   const [fo2, setFo2] = useState(1.0);
 
   const [capAt100, setCapAt100] = useState(true);
+
+  // Formulario "Consultas"
+  const [cNombre, setCNombre] = useState("");
+  const [cEmpresa, setCEmpresa] = useState("");
+  const [cRol, setCRol] = useState("");
+  const [cConsulta, setCConsulta] = useState("");
+  const [cMsg, setCMsg] = useState("");
 
   const warnings = useMemo(() => {
     const w = [];
@@ -175,6 +179,33 @@ export default function App() {
 
   const year = new Date().getFullYear();
 
+  const onSubmitConsulta = (e) => {
+    e.preventDefault();
+    setCMsg("");
+
+    const nombre = (cNombre || "").trim();
+    const empresa = (cEmpresa || "").trim();
+    const rol = (cRol || "").trim();
+    const consulta = (cConsulta || "").trim();
+
+    if (!nombre || !empresa || !rol || !consulta) {
+      setCMsg("Por favor completá Nombre, Empresa, Rol y la Consulta.");
+      return;
+    }
+
+    // Sin backend: generamos mailto (abre el cliente de correo del usuario).
+    // Si luego querés enviarlo a un endpoint, lo cambiamos a fetch().
+    const subject = encodeURIComponent(`Consulta - Calculadora OEE (${empresa})`);
+    const body = encodeURIComponent(
+      `Nombre: ${nombre}\nEmpresa: ${empresa}\nRol: ${rol}\n\nConsulta:\n${consulta}\n`
+    );
+
+    window.location.href = `mailto:contacto@brandatta.com.ar?subject=${subject}&body=${body}`;
+
+    // UX: dejamos un feedback y limpiamos (opcional)
+    setCMsg("Abriendo tu cliente de correo para enviar la consulta...");
+  };
+
   return (
     <div className="s-shell">
       <aside className="s-sidebar">
@@ -204,8 +235,8 @@ export default function App() {
           isInt
         />
 
-        <Stepper label="Piezas Totales" value={piezasTotales} onChange={setPiezasTotales} step={100} isInt />
-        <Stepper label="Piezas de Calidad Aprobada" value={piezasBuenas} onChange={setPiezasBuenas} step={100} isInt />
+        <Stepper label="Piezas Totales" value={piezasTotales} onChange={setPiezasTotales} step={10} isInt />
+        <Stepper label="Piezas de Calidad Aprobada" value={piezasBuenas} onChange={setPiezasBuenas} step={10} isInt />
 
         <Stepper label="Factor Capacidad Ideal FO1" value={fo1} onChange={setFo1} step={0.1} min={0.1} highlight />
         <Stepper label="Factor Capacidad Ideal FO2" value={fo2} onChange={setFo2} step={0.1} min={0.1} highlight />
@@ -255,6 +286,60 @@ export default function App() {
         </div>
         <div className="formula"><b>Calidad (Q)</b> = Piezas buenas / Piezas totales</div>
         <div className="note"><b>OEE = A × P × Q</b></div>
+
+        {/* CONSULTAS */}
+        <h2 className="s-h2">Consultas</h2>
+        <form className="s-contact" onSubmit={onSubmitConsulta}>
+          <div className="s-contact-grid">
+            <div className="s-contact-field">
+              <label className="s-contact-label">Nombre</label>
+              <input
+                className="s-contact-input"
+                value={cNombre}
+                onChange={(e) => setCNombre(e.target.value)}
+                placeholder="Tu nombre"
+                autoComplete="name"
+              />
+            </div>
+
+            <div className="s-contact-field">
+              <label className="s-contact-label">Empresa</label>
+              <input
+                className="s-contact-input"
+                value={cEmpresa}
+                onChange={(e) => setCEmpresa(e.target.value)}
+                placeholder="Tu empresa"
+                autoComplete="organization"
+              />
+            </div>
+
+            <div className="s-contact-field">
+              <label className="s-contact-label">Rol</label>
+              <input
+                className="s-contact-input"
+                value={cRol}
+                onChange={(e) => setCRol(e.target.value)}
+                placeholder="Ej: Jefe de planta, Calidad, Mantenimiento…"
+              />
+            </div>
+          </div>
+
+          <div className="s-contact-field">
+            <label className="s-contact-label">Consulta</label>
+            <textarea
+              className="s-contact-textarea"
+              value={cConsulta}
+              onChange={(e) => setCConsulta(e.target.value)}
+              placeholder="Escribí tu consulta…"
+              rows={5}
+            />
+          </div>
+
+          <div className="s-contact-actions">
+            <button className="s-contact-btn" type="submit">Enviar consulta</button>
+            {cMsg && <div className="s-contact-msg">{cMsg}</div>}
+          </div>
+        </form>
 
         <div className="s-footer">© {year} — Brandatta • Calculadora OEE</div>
       </main>
