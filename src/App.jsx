@@ -336,7 +336,7 @@ export default function App() {
           </div>
 
           <div className="s-contact-actions">
-            <button className="s-contact-btn" type="submit">Enviar consulta</button>
+            <button className="s-contact-btn" type="submit">Si tenes consultas tecnicas o queres saber sobre nuestros sistemas de captura y analitica de datos en plantas industriales, no dudes en consultarnos...</button>
             {cMsg && <div className="s-contact-msg">{cMsg}</div>}
           </div>
         </form>
