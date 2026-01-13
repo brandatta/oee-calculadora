@@ -140,4 +140,124 @@ export default function App() {
   const warnings = useMemo(() => {
     const w = [];
     if (tiempoPlan === 0) w.push("El Tiempo planificado es 0. No se puede calcular Disponibilidad.");
-    if (tiempoPlan > 0 && tiempoParo > tiempoPlan) w.push("Los Paros su
+    if (tiempoPlan > 0 && tiempoParo > tiempoPlan) w.push("Los Paros superan el Tiempo planificado.");
+    if (piezasTotales > 0 && piezasBuenas > piezasTotales) w.push("Las Piezas buenas superan las totales.");
+    if (unidadesIdealEnTP === 0 && piezasTotales > 0) w.push("Las Unidades ideales en el Tiempo planificado son 0.");
+    if (fo1 <= 0 || fo2 <= 0) w.push("FO1 y FO2 deben ser mayores a 0.");
+    return w;
+  }, [tiempoPlan, tiempoParo, piezasTotales, piezasBuenas, unidadesIdealEnTP, fo1, fo2]);
+
+  const { A, P, Q, OEE, tiempoOperacion, A_raw, P_raw, Q_raw, OEE_raw } = useMemo(
+    () =>
+      calcOEE({
+        tiempoPlan,
+        tiempoParo,
+        unidadesIdealEnTP,
+        piezasTotales,
+        piezasBuenas,
+        fo1,
+        fo2,
+        capAt100,
+      }),
+    [tiempoPlan, tiempoParo, unidadesIdealEnTP, piezasTotales, piezasBuenas, fo1, fo2, capAt100]
+  );
+
+  const audit = useMemo(() => {
+    if (!capAt100) return null;
+    const over = [];
+    if (A_raw > 1) over.push(`Disponibilidad sin cap: ${(A_raw * 100).toFixed(2)}%`);
+    if (P_raw > 1) over.push(`Rendimiento sin cap: ${(P_raw * 100).toFixed(2)}%`);
+    if (Q_raw > 1) over.push(`Calidad sin cap: ${(Q_raw * 100).toFixed(2)}%`);
+    if (OEE_raw > 1) over.push(`OEE sin cap: ${(OEE_raw * 100).toFixed(2)}%`);
+    if (!over.length) return null;
+    return "Algunas métricas superan 100%.\nValores sin cap:\n- " + over.join("\n- ");
+  }, [capAt100, A_raw, P_raw, Q_raw, OEE_raw]);
+
+  const year = new Date().getFullYear();
+
+  return (
+    <div className="s-shell">
+      <aside className="s-sidebar">
+        <div className="s-logo-row">
+          <a href="https://brandatta.com.ar" target="_blank" rel="noopener noreferrer">
+            <img
+              src="/brandatta_logo.png"
+              alt="Brandatta"
+              className="s-logo"
+              style={{ cursor: "pointer" }}
+              onError={(e) => (e.currentTarget.style.display = "none")}
+            />
+          </a>
+        </div>
+
+        <div className="s-sidebar-title">Parámetros</div>
+
+        <Stepper label="Tiempo Planificado (min)" value={tiempoPlan} onChange={setTiempoPlan} />
+        <Stepper label="Paradas Registradas (min)" value={tiempoParo} onChange={setTiempoParo} />
+
+        <Stepper
+          label="Unidades ideales en Tiempo planificado (unid)"
+          value={unidadesIdealEnTP}
+          onChange={setUnidadesIdealEnTP}
+          step={10}
+          min={0}
+          isInt
+        />
+
+        <Stepper label="Piezas Totales" value={piezasTotales} onChange={setPiezasTotales} step={100} isInt />
+        <Stepper label="Piezas de Calidad Aprobada" value={piezasBuenas} onChange={setPiezasBuenas} step={100} isInt />
+
+        <Stepper label="Factor Capacidad Ideal FO1" value={fo1} onChange={setFo1} step={0.1} min={0.1} highlight />
+        <Stepper label="Factor Capacidad Ideal FO2" value={fo2} onChange={setFo2} step={0.1} min={0.1} highlight />
+
+        <label className="s-toggle">
+          <input type="checkbox" checked={capAt100} onChange={(e) => setCapAt100(e.target.checked)} />
+          <span>Capear métricas a 100%</span>
+        </label>
+
+        {warnings.length > 0 && (
+          <div className="s-obs">
+            <div className="s-obs-title">Observaciones</div>
+            {warnings.map((w, i) => (
+              <SidebarWarning key={i} text={w} />
+            ))}
+          </div>
+        )}
+      </aside>
+
+      <main className="s-main">
+        <h1 className="s-title">Calculadora de OEE</h1>
+
+        <div className="s-kpi-grid">
+          {[
+            { n: "Disponibilidad (A)", v: A },
+            { n: "Rendimiento (P)", v: P },
+            { n: "Calidad (Q)", v: Q },
+            { n: "OEE", v: OEE },
+            { n: "Tiempo Operación (min)", v: tiempoOperacion, t: true },
+          ].map((k) => (
+            <div key={k.n} className="kpi-card">
+              <div className="kpi-title">{k.n}</div>
+              <div className={`kpi-value ${k.t ? "ok" : kpiColor(k.v)}`}>
+                {k.t ? num2(k.v) : pct(k.v)}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {audit && <InfoBox text={audit} />}
+
+        <h2 className="s-h2">Conceptos</h2>
+        <div className="formula"><b>Disponibilidad (A)</b> = Tiempo de operación / Tiempo planificado</div>
+        <div className="formula"><b>Rendimiento (P)</b> = Piezas totales / Capacidad ideal ajustada</div>
+        <div className="formula">
+          Capacidad ideal ajustada = [(Unidades ideales en tiempo planificado / Tiempo planificado) × Tiempo de operación] × (FO1 × FO2)
+        </div>
+        <div className="formula"><b>Calidad (Q)</b> = Piezas buenas / Piezas totales</div>
+        <div className="note"><b>OEE = A × P × Q</b></div>
+
+        <div className="s-footer">© {year} — Brandatta • Calculadora OEE</div>
+      </main>
+    </div>
+  );
+}
