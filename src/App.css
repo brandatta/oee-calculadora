@@ -41,6 +41,7 @@ body {
   background: var(--sidebar);
   border-right: 1px solid var(--line);
   padding: 18px 16px;
+  overflow-x: hidden; /* evita overflow horizontal si algún control empuja */
 }
 
 .s-logo-row {
@@ -65,13 +66,16 @@ body {
 
 .s-stepper {
   display: grid;
-  grid-template-columns: 1fr 34px 34px;
+  grid-template-columns: minmax(0, 1fr) 34px 34px; /* clave: evita que el input empuje los botones */
   gap: 8px;
   align-items: center;
+  width: 100%;
 }
 
 .s-input {
   height: 40px;
+  width: 100%;
+  min-width: 0; /* clave: evita overflow del grid */
   border-radius: 10px;
   border: 1px solid var(--line);
   background: #fff;
@@ -83,6 +87,7 @@ body {
 
 .s-btn {
   height: 40px;
+  min-width: 34px; /* asegura tamaño fijo */
   border-radius: 10px;
   border: 1px solid var(--line);
   background: #fff;
@@ -207,3 +212,4 @@ body {
   .s-kpi-grid { max-width: 100%; }
   .s-subtitle, .formula, .note, .s-info, .s-footer { max-width: 100%; }
 }
+
