@@ -1,4 +1,4 @@
-cat > src/App.jsx <<'EOF'
+
 import React, { useMemo, useState } from "react";
 
 function clampNumber(x) {
