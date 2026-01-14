@@ -17,3 +17,14 @@
     "vite": "^5.4.10"
   }
 }
+{
+  "name": "oee-contact-server",
+  "version": "1.0.0",
+  "private": true,
+  "main": "server.js",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.14"
+  }
+}
