@@ -119,6 +119,10 @@ function InfoBox({ text }) {
   );
 }
 
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export default function App() {
   // Defaults solicitados
   const [tiempoPlan, setTiempoPlan] = useState(480);
@@ -136,6 +140,7 @@ export default function App() {
   // Formulario "Consultas"
   const [cNombre, setCNombre] = useState("");
   const [cEmpresa, setCEmpresa] = useState("");
+  const [cEmail, setCEmail] = useState(""); // NUEVO
   const [cRol, setCRol] = useState("");
   const [cConsulta, setCConsulta] = useState("");
   const [cMsg, setCMsg] = useState("");
@@ -186,11 +191,16 @@ export default function App() {
 
     const nombre = (cNombre || "").trim();
     const empresa = (cEmpresa || "").trim();
+    const email = (cEmail || "").trim(); // NUEVO
     const rol = (cRol || "").trim();
     const consulta = (cConsulta || "").trim();
 
-    if (!nombre || !empresa || !rol || !consulta) {
-      setCMsg("Por favor completá Nombre, Empresa, Rol y la Consulta.");
+    if (!nombre || !empresa || !email || !rol || !consulta) {
+      setCMsg("Por favor completá Nombre, Empresa, Email, Rol y la Consulta.");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setCMsg("Por favor ingresá un email válido.");
       return;
     }
 
@@ -201,7 +211,7 @@ export default function App() {
       const resp = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, empresa, rol, consulta }),
+        body: JSON.stringify({ nombre, empresa, email, rol, consulta }),
       });
 
       const data = await resp.json().catch(() => ({}));
@@ -213,6 +223,7 @@ export default function App() {
       setCMsg("Consulta enviada. Gracias.");
       setCNombre("");
       setCEmpresa("");
+      setCEmail("");
       setCRol("");
       setCConsulta("");
     } catch (err) {
@@ -306,6 +317,7 @@ export default function App() {
         {/* CONSULTAS */}
         <h2 className="s-h2">Consultas</h2>
         <form className="s-contact" onSubmit={onSubmitConsulta}>
+          {/* Fila 1: Nombre / Empresa / Email */}
           <div className="s-contact-grid">
             <div className="s-contact-field">
               <label className="s-contact-label">Nombre</label>
@@ -330,17 +342,31 @@ export default function App() {
             </div>
 
             <div className="s-contact-field">
-              <label className="s-contact-label">Rol</label>
+              <label className="s-contact-label">Email</label>
               <input
                 className="s-contact-input"
-                value={cRol}
-                onChange={(e) => setCRol(e.target.value)}
-                placeholder="Ej: Jefe de planta, Calidad, Mantenimiento…"
+                type="email"
+                value={cEmail}
+                onChange={(e) => setCEmail(e.target.value)}
+                placeholder="tu@email.com"
+                autoComplete="email"
               />
             </div>
           </div>
 
+          {/* Rol */}
           <div className="s-contact-field">
+            <label className="s-contact-label">Rol</label>
+            <input
+              className="s-contact-input"
+              value={cRol}
+              onChange={(e) => setCRol(e.target.value)}
+              placeholder="Ej: Jefe de planta, Calidad, Mantenimiento…"
+            />
+          </div>
+
+          {/* Consulta */}
+          <div className="s-contact-field" style={{ marginTop: 12 }}>
             <label className="s-contact-label">Consulta</label>
             <textarea
               className="s-contact-textarea"
@@ -355,9 +381,6 @@ export default function App() {
             <button className="s-contact-btn" type="submit" disabled={cSending}>
               {cSending ? "Enviando..." : "Enviar consulta"}
             </button>
-
-            <div className="s-contact-hint">
-            </div>
 
             {cMsg && <div className="s-contact-msg">{cMsg}</div>}
           </div>
