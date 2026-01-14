@@ -2,35 +2,39 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
+# Dependencias del frontend
 COPY package*.json ./
 RUN npm ci
 
+# Código + build
 COPY . .
 RUN npm run build
+
 
 # ---------- runtime: nginx + node (same container) ----------
 FROM nginx:1.27-alpine
 
-# Install Node.js + npm + supervisor to run Node and Nginx together
+# Necesitamos Node + supervisor para correr 2 procesos
 RUN apk add --no-cache nodejs npm supervisor
 
-# 1) Nginx site config (your file name is nginx.conf, OK)
+# Nginx site config (tu archivo nginx.conf)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# 2) Frontend build output
+# Frontend compilado
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# 3) Backend source
+# Backend en raíz: copiamos server.js + package*.json
 WORKDIR /app
-COPY server /app/server
+COPY server.js /app/server.js
+COPY package*.json /app/
 
-# 4) Install backend deps (production only)
-RUN cd /app/server && npm install --omit=dev
+# Instalamos deps del backend en runtime
+# IMPORTANTE: esto instala deps de /app/package.json
+RUN npm install --omit=dev
 
-# 5) Supervisor config (must exist in repo root)
+# Supervisor config
 COPY supervisord.conf /etc/supervisord.conf
 
 EXPOSE 80
 
-# Start both Node (API) and Nginx
 CMD ["/usr/bin/supervisord","-c","/etc/supervisord.conf"]
