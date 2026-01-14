@@ -23,9 +23,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Frontend compilado
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Backend en raíz: copiamos server.js + package*.json
+# Backend en raíz: copiamos server.jcs + package*.json
 WORKDIR /app
-COPY server.js /app/server.js
+COPY server.jcs /app/server.jcs
 COPY package*.json /app/
 
 # Instalamos deps del backend en runtime
