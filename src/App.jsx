@@ -38,12 +38,11 @@ function calcOEE({
   // Rendimiento (P)
   // tasa ideal = (unidades ideales en TP) / (tiempo planificado) => unid/min
   // unidades ideales en operación = tasa ideal * tiempoOperacion
-  // FO1 y FO2 ajustan la CAPACIDAD IDEAL => se aplican en el denominador
+  // FO1 y FO2 ajustan la CAPACIDAD IDEAL (como multiplicadores sobre la capacidad ideal)
   const tasaIdealUnidPorMin = tp > 0 ? uIdealTP / tp : 0;
   const unidadesIdealesEnOperacion = tasaIdealUnidPorMin * tiempoOperacion;
 
   const capacidadIdealAjustada = unidadesIdealesEnOperacion * (f1 * f2);
-
   const P_raw = capacidadIdealAjustada > 0 ? pt / capacidadIdealAjustada : 0;
 
   // Calidad
@@ -128,7 +127,7 @@ export default function App() {
   const [piezasTotales, setPiezasTotales] = useState(532);
   const [piezasBuenas, setPiezasBuenas] = useState(520);
 
-  // FO1/FO2 ajustan la capacidad ideal (denominador)
+  // FO1/FO2 ajustan la capacidad ideal
   const [fo1, setFo1] = useState(1.0);
   const [fo2, setFo2] = useState(1.0);
 
@@ -140,6 +139,7 @@ export default function App() {
   const [cRol, setCRol] = useState("");
   const [cConsulta, setCConsulta] = useState("");
   const [cMsg, setCMsg] = useState("");
+  const [cSending, setCSending] = useState(false);
 
   const warnings = useMemo(() => {
     const w = [];
@@ -179,7 +179,8 @@ export default function App() {
 
   const year = new Date().getFullYear();
 
-  const onSubmitConsulta = (e) => {
+  // SUBMIT REAL (backend SES vía /api/contact)
+  const onSubmitConsulta = async (e) => {
     e.preventDefault();
     setCMsg("");
 
@@ -193,17 +194,32 @@ export default function App() {
       return;
     }
 
-    // Sin backend: generamos mailto (abre el cliente de correo del usuario).
-    // Si luego querés enviarlo a un endpoint, lo cambiamos a fetch().
-    const subject = encodeURIComponent(`Consulta - Calculadora OEE (${empresa})`);
-    const body = encodeURIComponent(
-      `Nombre: ${nombre}\nEmpresa: ${empresa}\nRol: ${rol}\n\nConsulta:\n${consulta}\n`
-    );
+    try {
+      setCSending(true);
+      setCMsg("Enviando consulta...");
 
-    window.location.href = `mailto:sebastian@brandatta.com.ar?subject=${subject}&body=${body}`;
+      const resp = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, empresa, rol, consulta }),
+      });
 
-    // UX: dejamos un feedback y limpiamos (opcional)
-    setCMsg("Abriendo tu cliente de correo para enviar la consulta...");
+      const data = await resp.json().catch(() => ({}));
+
+      if (!resp.ok || !data.ok) {
+        throw new Error(data.error || `HTTP ${resp.status}`);
+      }
+
+      setCMsg("Consulta enviada. Gracias.");
+      setCNombre("");
+      setCEmpresa("");
+      setCRol("");
+      setCConsulta("");
+    } catch (err) {
+      setCMsg("No se pudo enviar la consulta. Intentá nuevamente.");
+    } finally {
+      setCSending(false);
+    }
   };
 
   return (
@@ -336,7 +352,14 @@ export default function App() {
           </div>
 
           <div className="s-contact-actions">
-            <button className="s-contact-btn" type="submit">Si tenes consultas tecnicas o queres saber sobre nuestros sistemas de captura y analitica de datos en plantas industriales, no dudes en consultarnos...</button>
+            <button className="s-contact-btn" type="submit" disabled={cSending}>
+              {cSending ? "Enviando..." : "Enviar consulta"}
+            </button>
+
+            <div className="s-contact-hint">
+              Si tenés consultas técnicas o querés conocer nuestros sistemas de captura y analítica de datos en plantas industriales, no dudes en contactarnos.
+            </div>
+
             {cMsg && <div className="s-contact-msg">{cMsg}</div>}
           </div>
         </form>
@@ -346,3 +369,4 @@ export default function App() {
     </div>
   );
 }
+
