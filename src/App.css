@@ -1,4 +1,296 @@
+/* src/App.css */
+:root {
+  --bg: #ffffff;
+  --sidebar: #f6f7f9;
+  --text: #0f172a;
+  --muted: #64748b;
+  --line: rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+
+  --ok: #107c41;
+  --mid: #c77d00;
+  --bad: #b00020;
+
+  --note-bg: #fff7e6;
+  --note-line: #ffe1ac;
+
+  --formula-bg: #eef6ff;
+  --formula-line: #d3e6ff;
+
+  --fo-bg: #e9f8ef;
+  --fo-line: #bde5c1;
+  --fo-text: #285c36;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.s-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+}
+
+.s-sidebar {
+  background: var(--sidebar);
+  border-right: 1px solid var(--line);
+  padding: 18px 16px;
+  overflow-x: hidden; /* evita overflow horizontal si algún control empuja */
+}
+
+.s-logo-row {
+  display: flex;
+  align-items: center;
+  padding: 4px 2px 14px;
+}
+.s-logo { width: 170px; height: auto; display: block; }
+
+.s-sidebar-title {
+  font-weight: 700;
+  font-size: 16px;
+  margin: 6px 0 14px;
+}
+
+.s-field { margin-bottom: 14px; }
+.s-label {
+  font-size: 12px;
+  color: #1f2937;
+  margin: 0 0 6px;
+}
+
+.s-stepper {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px 34px; /* clave: evita que el input empuje los botones */
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.s-input {
+  height: 40px;
+  width: 100%;
+  min-width: 0; /* clave: evita overflow del grid */
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 0 10px;
+  font-size: 13px;
+  outline: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.s-btn {
+  height: 40px;
+  min-width: 34px; /* asegura tamaño fijo */
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  box-shadow: var(--shadow-sm);
+}
+.s-btn:hover { background: #fafafa; }
+
+.s-highlight .s-input {
+  background: var(--fo-bg);
+  border-color: var(--fo-line);
+  color: var(--fo-text);
+}
+
+.s-toggle {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0 8px;
+  font-size: 13px;
+  color: #111827;
+}
+.s-toggle input { transform: scale(1.05); }
+
+.s-obs { margin-top: 12px; }
+.s-obs-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.s-warning {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 8px;
+  align-items: start;
+  background: #fff3cd;
+  border: 1px solid #ffe69c;
+  color: #7a5d00;
+  border-radius: 10px;
+  padding: 10px 10px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow-sm);
+}
+.s-warning-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: #ffe8a3;
+  font-weight: 800;
+}
+.s-warning-text { font-size: 12px; line-height: 1.35; }
+
+.s-main { padding: 26px 26px 40px; }
+
+.s-title {
+  font-size: 36px;
+  margin: 6px 0 10px;
+  font-weight: 800;
+}
+
+.s-subtitle {
+  margin: 0 0 18px;
+  font-size: 13px;
+  color: #0f172a;
+  max-width: 980px;
+}
+
+.s-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 980px;
+}
+
+/* EXACTO Streamlit */
+.kpi-card {border-radius: 16px; padding: 14px 16px; background: #f7f7f8; border: 1px solid #e9eaee; box-shadow: var(--shadow-sm);}
+.kpi-title {font-size: 13px; color: #555; margin-bottom: 4px}
+.kpi-value {font-size: 26px; font-weight: 700}
+.small-muted {font-size:12px; color:#777; margin-top:6px}
+.ok {color:#107c41}
+.mid {color:#c77d00}
+.bad {color:#b00020}
+.note {background:#fff7e6; border:1px solid #ffe1ac; padding:12px 14px; border-radius:12px; max-width:980px; margin-top:8px}
+.formula {background:#eef6ff; border:1px solid #d3e6ff; padding:12px 14px; border-radius:12px; max-width:980px; margin-bottom:10px}
+
+.s-info {
+  max-width: 980px;
+  margin: 12px 0 8px;
+  background: #e7f3ff;
+  border: 1px solid #b6dbff;
+  color: #0b3a66;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.s-h2 {
+  margin: 18px 0 10px;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.s-footer {
+  margin-top: 10px;
+  color: #6b7280;
+  font-size: 12px;
+  max-width: 980px;
+}
+
 /* =========================
+   CONSULTAS (form)
+   ========================= */
+.s-contact {
+  max-width: 980px;
+  margin-top: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.s-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.s-contact-field { display: flex; flex-direction: column; }
+
+.s-contact-label {
+  font-size: 12px;
+  color: #1f2937;
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+
+.s-contact-input {
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 0 10px;
+  font-size: 13px;
+  outline: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.s-contact-textarea {
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 10px 10px;
+  font-size: 13px;
+  outline: none;
+  box-shadow: var(--shadow-sm);
+  resize: vertical;
+}
+
+.s-contact-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.s-contact-btn {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #111827;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+.s-contact-btn:hover { filter: brightness(0.95); }
+
+.s-contact-msg {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+@media (max-width: 1100px) {
+  .s-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .s-contact-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 920px) {
+  .s-shell { grid-template-columns: 1fr; }
+  .s-sidebar { border-right: none; border-bottom: 1px solid var(--line); }
+  .s-kpi-grid { max-width: 100%; }
+  .s-subtitle, .formula, .note, .s-info, .s-footer, .s-contact { max-width: 100%; }
+}/* =========================
    CONSULTAS (form)
    ========================= */
 .s-contact {
