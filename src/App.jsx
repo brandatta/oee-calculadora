@@ -58,7 +58,17 @@ function calcOEE({
     return { A, P, Q, OEE, tiempoOperacion, A_raw, P_raw, Q_raw, OEE_raw };
   }
 
-  return { A: A_raw, P: P_raw, Q: Q_raw, OEE: OEE_raw, tiempoOperacion, A_raw, P_raw, Q_raw, OEE_raw };
+  return {
+    A: A_raw,
+    P: P_raw,
+    Q: Q_raw,
+    OEE: OEE_raw,
+    tiempoOperacion,
+    A_raw,
+    P_raw,
+    Q_raw,
+    OEE_raw,
+  };
 }
 
 function pct(x) {
@@ -93,8 +103,12 @@ function Stepper({ label, value, onChange, step = 1, min = 0, isInt = false, hig
           step={step}
           onChange={(e) => setVal(e.target.value)}
         />
-        <button type="button" className="s-btn" onClick={() => setVal(value - step)}>−</button>
-        <button type="button" className="s-btn" onClick={() => setVal(value + step)}>+</button>
+        <button type="button" className="s-btn" onClick={() => setVal(value - step)}>
+          −
+        </button>
+        <button type="button" className="s-btn" onClick={() => setVal(value + step)}>
+          +
+        </button>
       </div>
     </div>
   );
@@ -191,7 +205,7 @@ export default function App() {
 
     const nombre = (cNombre || "").trim();
     const empresa = (cEmpresa || "").trim();
-    const email = (cEmail || "").trim(); // NUEVO
+    const email = (cEmail || "").trim();
     const rol = (cRol || "").trim();
     const consulta = (cConsulta || "").trim();
 
@@ -296,9 +310,7 @@ export default function App() {
           ].map((k) => (
             <div key={k.n} className="kpi-card">
               <div className="kpi-title">{k.n}</div>
-              <div className={`kpi-value ${k.t ? "ok" : kpiColor(k.v)}`}>
-                {k.t ? num2(k.v) : pct(k.v)}
-              </div>
+              <div className={`kpi-value ${k.t ? "ok" : kpiColor(k.v)}`}>{k.t ? num2(k.v) : pct(k.v)}</div>
             </div>
           ))}
         </div>
@@ -306,13 +318,21 @@ export default function App() {
         {audit && <InfoBox text={audit} />}
 
         <h2 className="s-h2">Conceptos</h2>
-        <div className="formula"><b>Disponibilidad (A)</b> = Tiempo de operación / Tiempo planificado</div>
-        <div className="formula"><b>Rendimiento (P)</b> = Piezas totales / Capacidad ideal ajustada</div>
+        <div className="formula">
+          <b>Disponibilidad (A)</b> = Tiempo de operación / Tiempo planificado
+        </div>
+        <div className="formula">
+          <b>Rendimiento (P)</b> = Piezas totales / Capacidad ideal ajustada
+        </div>
         <div className="formula">
           Capacidad ideal ajustada = [(Unidades ideales en tiempo planificado / Tiempo planificado) × Tiempo de operación] × (FO1 × FO2)
         </div>
-        <div className="formula"><b>Calidad (Q)</b> = Piezas buenas / Piezas totales</div>
-        <div className="note"><b>OEE = A × P × Q</b></div>
+        <div className="formula">
+          <b>Calidad (Q)</b> = Piezas buenas / Piezas totales
+        </div>
+        <div className="note">
+          <b>OEE = A × P × Q</b>
+        </div>
 
         {/* CONSULTAS */}
         <h2 className="s-h2">Consultas</h2>
@@ -391,4 +411,3 @@ export default function App() {
     </div>
   );
 }
-
