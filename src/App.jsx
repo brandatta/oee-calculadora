@@ -357,7 +357,6 @@ export default function App() {
             </button>
 
             <div className="s-contact-hint">
-              Si tenés consultas técnicas o querés conocer nuestros sistemas de captura y analítica de datos en plantas industriales, no dudes en contactarnos.
             </div>
 
             {cMsg && <div className="s-contact-msg">{cMsg}</div>}
