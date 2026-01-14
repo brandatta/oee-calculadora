@@ -8,8 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
 
-    "start:server": "node server.js",
-    "start": "node server.js"
+    "start:server": "node server.jcs",
+    "start": "node server.jcs"
   },
   "dependencies": {
     "express": "^4.19.2",
