@@ -10,6 +10,10 @@ function mustEnv(name) {
   return v;
 }
 
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 const SMTP_HOST = mustEnv("SES_SMTP_HOST"); // email-smtp.us-east-2.amazonaws.com
 const SMTP_PORT = Number(process.env.SES_SMTP_PORT || 587);
 const SMTP_USER = mustEnv("SES_SMTP_USER");
@@ -22,7 +26,7 @@ const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT,
   secure: SMTP_PORT === 465, // 587 => false (STARTTLS)
-  auth: { user: SMTP_USER, pass: SMTP_PASS }
+  auth: { user: SMTP_USER, pass: SMTP_PASS },
 });
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
@@ -31,17 +35,23 @@ app.post("/contact", async (req, res) => {
   try {
     const nombre = String(req.body?.nombre || "").trim();
     const empresa = String(req.body?.empresa || "").trim();
+    const email = String(req.body?.email || "").trim(); // NUEVO
     const rol = String(req.body?.rol || "").trim();
     const consulta = String(req.body?.consulta || "").trim();
 
-    if (!nombre || !empresa || !rol || !consulta) {
+    if (!nombre || !empresa || !email || !rol || !consulta) {
       return res.status(400).json({ ok: false, error: "Faltan campos requeridos." });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ ok: false, error: "Email inválido." });
     }
 
     const subject = `Consulta - Calculadora OEE (${empresa})`;
     const text =
 `Nombre: ${nombre}
 Empresa: ${empresa}
+Email: ${email}
 Rol: ${rol}
 
 Consulta:
@@ -52,7 +62,8 @@ ${consulta}
       from: `Calculadora OEE <${FROM_EMAIL}>`,
       to: TO_EMAIL,
       subject,
-      text
+      text,
+      replyTo: email, // CLAVE: responder al contacto
     });
 
     return res.json({ ok: true });
